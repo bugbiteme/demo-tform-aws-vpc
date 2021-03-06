@@ -1,9 +1,9 @@
 
 // TODO break public and private into separate AZs
 data "aws_availability_zones" "available" {}
- 
+
 module "vpc" {
-  source                           = "terraform-aws-modules/vpc/aws"
+  source = "terraform-aws-modules/vpc/aws"
   //version                          = "2.5.0"
   name                             = "${var.namespace}-vpc"
   cidr                             = "10.0.0.0/16"
@@ -16,7 +16,8 @@ module "vpc" {
   single_nat_gateway               = true
 }
 
-resource "aws_security_group" "allow_ssh" {
+// SG to allow SSH connections from anywhere
+resource "aws_security_group" "allow_ssh_pub" {
   name        = "${var.namespace}-allow_ssh"
   description = "Allow SSH inbound traffic"
   vpc_id      = module.vpc.vpc_id
@@ -37,6 +38,32 @@ resource "aws_security_group" "allow_ssh" {
   }
 
   tags = {
-    Name = "${var.namespace}-allow_ssh"
+    Name = "${var.namespace}-allow_ssh_pub"
+  }
+}
+
+// SG to onlly allow SSH connections from VPC public subnets
+resource "aws_security_group" "allow_ssh_priv" {
+  name        = "${var.namespace}-allow_ssh_priv"
+  description = "Allow SSH inbound traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "SSH from VPC"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.namespace}-allow_ssh_priv"
   }
 }
