@@ -9,3 +9,5 @@
 *.tfvars
 
 .vscode
+
+*.pem
