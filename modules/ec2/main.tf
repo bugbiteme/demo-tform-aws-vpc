@@ -10,8 +10,8 @@ resource "aws_instance" "ec2_public" {
     "Name" = "${var.namespace}-EC2-PUBLIC"
   }
 
-  # Copies the sshkey file to /etc/myapp.conf
-  /*
+  # Copies the sshkey file to home dir
+  # TODO fix chmod issue (need to "chmod 400 before you can use")
   provisioner "file" {
     source      = "./${var.key_name}.pem"
     destination = "/home/ec2-user/${var.key_name}.pem"
@@ -24,7 +24,7 @@ resource "aws_instance" "ec2_public" {
       host        = self.public_ip
     }
   }
-  */
+  
 }
 
 resource "aws_instance" "ec2_private" {
