@@ -1,5 +1,25 @@
-# Amazon Resources Created Using Terraform
-Work in progress... documentation coming! Stay tuned!!
+# AWS VPC Creation with Terraform
+This project will create VCP with Internet Gateway, subnets accross 2 AZs: one public
+and one one private subnet.
+
+From there it will deploy a bastion host in the public subnet in AZ1 and a second host
+in the provate subnet in AZ2, which can connect to the internet via a NAT gatway created
+as part of the VPC.
+
+SSH key pair is dynamically genterated as well, and the private key is copied over to the
+bastion host.
+
+The ec2 instance in the public subnet is assigned a security group with access from the 
+the intenret to port 22 (for ssh).
+
+The ec2 instance in the private subnet is assigned to a security group that only allows
+access from the public subnet.
+
+Both security groups are dynamically created in the network module.
+
+## High level diagram
+
+![Diagram](img/demo-tform-aws-vpc.png)
 
 ## Current state
 
