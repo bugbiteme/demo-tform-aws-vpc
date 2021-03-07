@@ -24,7 +24,18 @@ resource "aws_instance" "ec2_public" {
       host        = self.public_ip
     }
   }
-  
+  provisioner "remote-exec" {
+    inline = ["chmod 400 ~/${var.key_name}.pem"]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("${var.key_name}.pem")
+      host        = self.public_ip
+    }
+
+  }
+
 }
 
 resource "aws_instance" "ec2_private" {
