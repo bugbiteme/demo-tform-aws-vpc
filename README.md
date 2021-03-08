@@ -31,4 +31,25 @@ Modules:
 - each subnet is in a different AZ
 - private key is copied over to the bastion ec2 instance so it can ssh into the private subnet
 - ec2 in private subnet has outgoing network access though the NAT gateway
-- may add ansible playbook to take care of copying over the shh key to the bastian ec2
+- may add ansible playbook to take care of copying over the shh key to the bastian ec2## Requirements
+
+No requirements.
+
+## Providers
+
+No provider.
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| namespace | The project namespace to use for unique resource naming | `string` | `"LL-TEST"` | no |
+| region | AWS region | `string` | `"us-east-1"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| private\_connection\_string | Copy/Paste/Enter - You are in the private ec2 instance |
+| public\_connection\_string | Copy/Paste/Enter - You are in the matrix |
+
