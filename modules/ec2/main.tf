@@ -1,5 +1,19 @@
+
+
+// Create aws_ami filter to pick up the ami available in your region
+data "aws_ami" "amazon-linux-2" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
+  }
+}
+
+// Configure the EC2 instance in a public subnet
 resource "aws_instance" "ec2_public" {
-  ami                         = "ami-0915bcb5fa77e4892"
+  ami                         = data.aws_ami.amazon-linux-2.id
   associate_public_ip_address = true
   instance_type               = "t2.micro"
   key_name                    = var.key_name
@@ -10,12 +24,10 @@ resource "aws_instance" "ec2_public" {
     "Name" = "${var.namespace}-EC2-PUBLIC"
   }
 
-  # Copies the sshkey file to home dir
-  # TODO fix chmod issue (need to "chmod 400 before you can use")
+  # Copies the ssh key file to home dir
   provisioner "file" {
     source      = "./${var.key_name}.pem"
     destination = "/home/ec2-user/${var.key_name}.pem"
-
 
     connection {
       type        = "ssh"
@@ -24,6 +36,8 @@ resource "aws_instance" "ec2_public" {
       host        = self.public_ip
     }
   }
+  
+  //chmod key 400 on EC2 instance
   provisioner "remote-exec" {
     inline = ["chmod 400 ~/${var.key_name}.pem"]
 
@@ -38,8 +52,9 @@ resource "aws_instance" "ec2_public" {
 
 }
 
+// Configure the EC2 instance in a private subnet
 resource "aws_instance" "ec2_private" {
-  ami                         = "ami-0915bcb5fa77e4892"
+  ami                         = data.aws_ami.amazon-linux-2.id
   associate_public_ip_address = false
   instance_type               = "t2.micro"
   key_name                    = var.key_name
