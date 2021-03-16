@@ -22,7 +22,7 @@ resource "aws_security_group" "allow_ssh_pub" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description = "SSH from VPC"
+    description = "SSH from the internet"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -48,7 +48,7 @@ resource "aws_security_group" "allow_ssh_priv" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description = "SSH from VPC"
+    description = "SSH only from internal VPC clients"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
