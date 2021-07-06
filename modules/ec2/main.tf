@@ -1,3 +1,15 @@
+locals {
+  tags = {
+    Name        = "EC2Test"
+    Product     = "Test"
+    Engineer    = "Richard Tan"
+    Org         = "URW"
+    BU          = "US Systems"
+    AppName     = "Ansible Testing"
+    Environment = "Wit Sandbox"
+  }
+}
+
 
 
 // Create aws_ami filter to pick up the ami available in your region
@@ -20,9 +32,10 @@ resource "aws_instance" "ec2_public" {
   subnet_id                   = var.vpc.public_subnets[0]
   vpc_security_group_ids      = [var.sg_pub_id]
 
-  tags = {
-    "Name" = "${var.namespace}-EC2-PUBLIC"
-  }
+  tags = merge(local.tags,{
+    "Name"      = "${var.namespace}-EC2-PUBLIC"
+    "Terraform" = "true"
+  })
 
   # Copies the ssh key file to home dir
   provisioner "file" {
@@ -61,8 +74,9 @@ resource "aws_instance" "ec2_private" {
   subnet_id                   = var.vpc.private_subnets[1]
   vpc_security_group_ids      = [var.sg_priv_id]
 
-  tags = {
-    "Name" = "${var.namespace}-EC2-PRIVATE"
-  }
+  tags = merge(local.tags,{
+    "Name"      = "${var.namespace}-EC2-PRIVATE"
+    "Terraform" = "true"
+  })
 
 }

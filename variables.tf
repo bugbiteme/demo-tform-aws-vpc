@@ -1,11 +1,15 @@
+variable "AWS_ACCESS_KEY" {}
+variable "AWS_SECRET_KEY" {}
+
+
 variable "namespace" {
   description = "The project namespace to use for unique resource naming"
-  default     = "LL-TEST"
+  default     = "rtan"
   type        = string
 }
 
 variable "region" {
   description = "AWS region"
-  default     = "us-east-1"
+  default     = "us-west-2"
   type        = string
 }
