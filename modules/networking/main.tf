@@ -13,7 +13,10 @@ module "vpc" {
   enable_dns_hostnames             = true
   enable_dns_support               = true
   enable_dhcp_options              = true
-  enable_nat_gateway               = false
+  #dhcp_options_domain_name         = "us.ad.westfield.com"
+  dhcp_options_domain_name_servers = ["8.8.8.8","8.8.4.4"]
+  #dhcp_options_netbios_node_type   = "2"
+  enable_nat_gateway               = true
   single_nat_gateway               = true
 
   tags = {
@@ -21,7 +24,7 @@ module "vpc" {
   }
 }
 
-
+ 
 // SG to allow SSH connections from Richard's Home
 resource "aws_security_group" "allow_ssh_pub" {
   name        = "${var.namespace}-allow_ssh"
@@ -34,6 +37,22 @@ resource "aws_security_group" "allow_ssh_pub" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["173.196.226.234/32"]
+  }
+
+  ingress {
+    description = "Allow RDP from rtan home"
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["173.196.226.234/32"]
+  }
+
+  ingress {
+    description = "Allow SSH from Corp Office"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["4.59.48.86/32"]
   }
 
   egress {
